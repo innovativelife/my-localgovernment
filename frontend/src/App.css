@@ -29,9 +29,41 @@ body {
 .landing {
   display: flex;
   flex-direction: column;
-  align-items: center;
   min-height: 100vh;
   padding: 0 24px;
+  position: relative;
+  overflow: hidden;
+  background-image: url('/hero.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.landing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(8,10,8,0.72) 0%,
+    rgba(8,10,8,0.45) 30%,
+    rgba(8,10,8,0.78) 65%,
+    rgba(8,10,8,0.96) 100%
+  );
+  z-index: 1;
+}
+.landing::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: -60px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(220,255,84,0.22) 0%, transparent 65%);
+  filter: blur(24px);
+  z-index: 2;
+  pointer-events: none;
+}
+.landing > * {
+  position: relative;
+  z-index: 3;
 }
 .landing .topbar {
   width: 100%;
@@ -43,63 +75,85 @@ body {
 }
 .landing .live {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: #9a9aa3;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: #dcff54;
   text-transform: uppercase;
+  border: 1px solid rgba(220,255,84,0.35);
+  border-radius: 100px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.landing .live::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #dcff54;
+  flex-shrink: 0;
 }
 .landing .label {
-  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: #9a9aa3;
-  margin-top: 40px;
-  margin-bottom: 12px;
+  margin-top: 44px;
+  margin-bottom: 0;
+}
+.landing .label::before {
+  content: '\2014 ';
+  color: #dcff54;
 }
 .landing .hero {
   width: 100%;
   max-width: 480px;
-  min-height: 120px;
+  flex: 1;
+  padding: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
 }
 .landing .quote {
   font-family: 'Fraunces', serif;
   font-weight: 300;
-  font-size: clamp(28px, 6vw, 44px);
+  font-size: clamp(28px, 8vw, 48px);
   letter-spacing: -0.02em;
-  text-align: center;
-  line-height: 1.2;
+  text-align: left;
+  line-height: 1.15;
 }
 .landing .cursor {
   display: inline-block;
-  width: 2px;
-  height: 1em;
+  width: 3px;
+  height: 30px;
   background: #dcff54;
   margin-left: 2px;
   animation: blink 1s step-end infinite;
   vertical-align: text-bottom;
 }
 .landing .tagline {
-  font-size: 15px;
+  font-size: 13px;
   color: #9a9aa3;
-  text-align: center;
+  text-align: left;
   line-height: 1.5;
-  margin-top: 32px;
+  margin: 18px 0 0;
   max-width: 380px;
 }
-.landing .tagline strong { color: #fafaf5; }
-.landing .cta-wrap { margin-top: 32px; }
+.landing .tagline strong { color: #fafaf5; font-weight: 500; }
+.landing .cta-wrap { padding: 22px 0 14px; width: 100%; max-width: 480px; }
 .landing .cta {
-  display: inline-flex;
+  width: 100%;
+  display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   background: #dcff54;
   color: #0e0e10;
   border: none;
   border-radius: 100px;
-  padding: 14px 28px;
+  padding: 16px 18px 16px 24px;
   font-family: 'Geist', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
@@ -112,15 +166,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: rgba(0,0,0,0.15);
+  width: 28px;
+  height: 28px;
+  background: #0e0e10;
   border-radius: 50%;
+  color: #fafaf5;
 }
 .landing .meta {
-  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: #9a9aa3;
-  margin-top: 16px;
+  text-align: center;
+  margin-top: 14px;
+  padding-bottom: 24px;
+  width: 100%;
+  max-width: 480px;
 }
 
 /* -- Chat View -- */
