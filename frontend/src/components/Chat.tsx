@@ -1,6 +1,6 @@
 // frontend/src/components/Chat.tsx
 import { useState, useRef, useEffect } from 'react';
-import { ChatMessage } from '../types';
+import type { ChatMessage } from '../types';
 import { sendMessage } from '../api/client';
 import BrandMark from './BrandMark';
 import InputBar from './InputBar';

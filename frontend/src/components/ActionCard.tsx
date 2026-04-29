@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ActionCard as ActionCardType } from '../types';
+import type { ActionCard as ActionCardType } from '../types';
 import { submitReport } from '../api/client';
 
 interface ActionCardProps {

@@ -1,4 +1,4 @@
-import { ChatRequest, ChatResponse, ReportRequest } from '../types';
+import type { ChatRequest, ChatResponse, ReportRequest } from '../types';
 
 const BASE = '/api';
 
