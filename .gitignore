@@ -5,3 +5,12 @@ bin/
 obj/
 *.mhtml
 ~$*
+
+# Firebase
+.firebase/
+*.log
+firebase-debug.log*
+firestore-debug.log*
+
+# Build output
+dist/

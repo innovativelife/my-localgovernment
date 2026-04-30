@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import type { ActionCard as ActionCardType } from '../types';
-import { submitReport } from '../api/client';
 
 interface ActionCardProps {
   card: ActionCardType;
-  councilId: string;
-  sessionId: string;
 }
 
-export default function ActionCard({ card, councilId, sessionId }: ActionCardProps) {
+export default function ActionCard({ card }: ActionCardProps) {
   const [toast, setToast] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -18,21 +14,6 @@ export default function ActionCard({ card, councilId, sessionId }: ActionCardPro
   };
 
   const handleAttachment = () => showToast('Coming soon');
-
-  const handleSubmit = async () => {
-    try {
-      await submitReport({
-        councilId,
-        sessionId,
-        scenarioType: card.type,
-        fields: card.fields,
-      });
-      setSubmitted(true);
-      showToast('Submitted successfully');
-    } catch {
-      showToast('Submission failed');
-    }
-  };
 
   return (
     <>
@@ -80,16 +61,6 @@ export default function ActionCard({ card, councilId, sessionId }: ActionCardPro
           </div>
         )}
 
-        {card.submitLabel && (
-          <button className="ac-submit" onClick={handleSubmit} disabled={submitted}>
-            {submitted ? 'Submitted ✓' : card.submitLabel}
-            {!submitted && (
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M13 5l7 7-7 7" />
-              </svg>
-            )}
-          </button>
-        )}
       </div>
       {toast && <div className="toast">{toast}</div>}
     </>
