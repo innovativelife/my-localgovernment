@@ -24,11 +24,6 @@ body {
   padding: 8px 16px;
   border-radius: 20px;
   z-index: 999;
-  animation: hintFade 4s ease forwards;
-}
-@keyframes hintFade {
-  0%, 70% { opacity: 1; }
-  100% { opacity: 0; }
 }
 
 /* -- Phone Frame -- */

@@ -8,12 +8,6 @@ type View = 'prototype' | 'deck';
 
 export default function App() {
   const [view, setView] = useState<View>('prototype');
-  const [showHint, setShowHint] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowHint(false), 4000);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -21,7 +15,6 @@ export default function App() {
       const tag = (e.target as HTMLElement).tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
       if (e.key === 'd' || e.key === 'D') {
-        setShowHint(false);
         setView('deck');
       }
     };
@@ -36,7 +29,7 @@ export default function App() {
   return (
     <>
       <PrototypeApp />
-      {showHint && <div className="deck-hint">Press D for deck mode</div>}
+      <div className="deck-hint">Press D for deck mode</div>
     </>
   );
 }
