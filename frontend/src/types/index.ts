@@ -17,6 +17,8 @@ export interface ChatResponse {
   message: string;
   actionCard: ActionCard | null;
   quickChips: string[];
+  action?: string;
+  executeAction?: string;
 }
 
 export interface ChatRequest {

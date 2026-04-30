@@ -1,141 +1,131 @@
-using GuidepostApi.Data;
 using GuidepostApi.Models;
+using System.Collections.Concurrent;
 
 namespace GuidepostApi.Services;
 
 public class PatternMatchAgentService : IAgentService
 {
-    private readonly InMemoryStore _store;
+    private static readonly List<string> ConfirmChips = new() { "Yes", "Not right now" };
 
-    private static readonly List<string> FallbackChips = new()
+    private static readonly List<string> DefaultChips = new()
     {
-        "Report a pothole", "Bin collection day", "Noise complaint", "Register a dog"
+        "Report an issue", "My local rep", "Development applications", "Bin collection", "Council website"
     };
 
-    private record ScenarioRule(
+    private record ActionDef(
         string[] Keywords,
-        string Type,
-        string AgentMessage,
-        string Tag,
-        string Source,
-        List<ActionCardField> Fields,
-        List<string> Attachments,
-        string SubmitLabel,
-        List<string> QuickChips
+        string[] ConfirmMessages,
+        string[] ExecuteMessages
     );
 
-    private readonly List<ScenarioRule> _rules;
-
-    public PatternMatchAgentService(InMemoryStore store)
+    private static readonly Dictionary<string, ActionDef> Actions = new()
     {
-        _store = store;
-        _rules = BuildRules();
-    }
+        { "report", new ActionDef(
+            Keywords: new[] { "report", "pothole", "issue" },
+            ConfirmMessages: new[]
+            {
+                "I can help you report that. Shall I open the report form?",
+                "No problem, I'll get that lodged for you. Ready to proceed?",
+                "Sure, I can help report that issue. Want me to go ahead?"
+            },
+            ExecuteMessages: new[]
+            {
+                "Ok - That has been submitted to the council.  Is there anything else I can help with?",
+                "Sent to council.  What's next?"
+            }
+        )},
+        { "rep", new ActionDef(
+            Keywords: new[] { "rep", "councillor", "representative", "elected" },
+            ConfirmMessages: new[]
+            {
+                "I can pull up your local representative's details. Shall I?",
+                "Sure, I can show you your councillor's contact info. Want me to proceed?",
+                "I've got your local rep's details. Would you like to see them?"
+            },
+            ExecuteMessages: new[]
+            {
+                "A good local rep can be such a big help!"
+            }
+        )},
+        { "development", new ActionDef(
+            Keywords: new[] { "development", "planning", "da ", "building" },
+            ConfirmMessages: new[]
+            {
+                "Shall I search council's web site for development info?",
+                "Want me to show you the council's web content on development?"
+            },
+            ExecuteMessages: new[]
+            {
+                "Hope you got what you needed!"
+            }
+        )},
+        { "bin", new ActionDef(
+            Keywords: new[] { "bin", "rubbish", "waste", "recycling", "garbage", "collection" },
+            ConfirmMessages: new[]
+            {
+                "Shall I search for bin info on the council's web site?"
+            },
+            ExecuteMessages: new[]
+            {
+                "Did you get what you needed?  If not, you may want to contact your Local Rep."
+            }
+        )},
+        { "website", new ActionDef(
+            Keywords: new[] { "website", "site", "web" },
+            ConfirmMessages: new[]
+            {
+                "I can open the council website for you. Shall I?",
+                "Sure, I'll pull up the council site. Want me to go ahead?",
+                "I can show you the council website. Ready?"
+            },
+            ExecuteMessages: new[]
+            {
+                "Did you get what you needed?  If not, you may want to contact your Local Rep."
+            }
+        )}
+    };
+
+    // Track pending action per session so "Yes" knows what to execute
+    private static readonly ConcurrentDictionary<string, string> PendingActions = new();
+
+    private static readonly Random Rng = new();
 
     public Task<ChatResponse> ProcessMessageAsync(ChatRequest request)
     {
-        var msg = request.Message.ToLowerInvariant();
-        var council = _store.Councils.FirstOrDefault(c => c.Id == request.CouncilId);
-        var councilName = council?.Name ?? "your council";
+        var msg = request.Message.ToLowerInvariant().Trim();
+        var sessionId = request.SessionId ?? "";
 
-        foreach (var rule in _rules)
+        // Check if user is confirming a pending action
+        if (msg == "yes" && PendingActions.TryRemove(sessionId, out var pendingAction))
         {
-            if (rule.Keywords.Any(k => msg.Contains(k)))
+            var actionDef = Actions[pendingAction];
+            var execMsg = actionDef.ExecuteMessages[Rng.Next(actionDef.ExecuteMessages.Length)];
+            return Task.FromResult(new ChatResponse(
+                execMsg, null, DefaultChips, Action: null, ExecuteAction: pendingAction));
+        }
+
+        // Check if user is declining
+        if (msg == "not right now" && PendingActions.TryRemove(sessionId, out _))
+        {
+            return Task.FromResult(new ChatResponse(
+                "No worries! Let me know if you need anything else.", null, DefaultChips));
+        }
+
+        // Check for action keywords
+        foreach (var (actionName, actionDef) in Actions)
+        {
+            if (actionDef.Keywords.Any(k => msg.Contains(k)))
             {
-                var agentMessage = rule.AgentMessage.Replace("{council}", councilName);
-                var submitLabel = rule.SubmitLabel.Replace("{council}", councilName);
-                var source = rule.Source.Replace("{councilShort}", GetShortName(councilName));
-
-                var card = new ActionCard(
-                    rule.Type,
-                    rule.Tag,
-                    source,
-                    rule.Fields,
-                    rule.Attachments,
-                    submitLabel
-                );
-
-                return Task.FromResult(new ChatResponse(agentMessage, card, rule.QuickChips));
+                PendingActions[sessionId] = actionName;
+                var confirmMsg = actionDef.ConfirmMessages[Rng.Next(actionDef.ConfirmMessages.Length)];
+                return Task.FromResult(new ChatResponse(
+                    confirmMsg, null, ConfirmChips, Action: actionName));
             }
         }
 
-        var fallbackMessage = "I'm not sure how to help with that yet. Here are some things I can help with:";
-        return Task.FromResult(new ChatResponse(fallbackMessage, null, FallbackChips));
+        // Fallback
+        return Task.FromResult(new ChatResponse(
+            "I'm not sure how to help with that yet. Here are some things I can do:",
+            null, DefaultChips));
     }
-
-    private static string GetShortName(string councilName)
-    {
-        var words = councilName.Split(' ');
-        return string.Join("", words.Select(w => w[0]));
-    }
-
-    private static List<ScenarioRule> BuildRules() => new()
-    {
-        new ScenarioRule(
-            Keywords: new[] { "pothole", "road", "crack", "footpath", "pavement", "sidewalk" },
-            Type: "report",
-            AgentMessage: "Got it. I'll lodge this with {council} — average response is 2–3 days.",
-            Tag: "Report ready",
-            Source: "{councilShort} · Works request",
-            Fields: new List<ActionCardField>
-            {
-                new("Location", "Boundary St, West End", true),
-                new("Type", "Pothole / road defect", true),
-                new("Council ref", "Pre-filled", true)
-            },
-            Attachments: new List<string> { "photo", "note" },
-            SubmitLabel: "Submit to {council}",
-            QuickChips: new List<string> { "Track this report", "Other issues nearby", "Bin day" }
-        ),
-        new ScenarioRule(
-            Keywords: new[] { "bin", "rubbish", "recycling", "waste", "garbage", "collection" },
-            Type: "lookup",
-            AgentMessage: "Here's your bin schedule for {council}.",
-            Tag: "Bin schedule",
-            Source: "{councilShort} · Waste services",
-            Fields: new List<ActionCardField>
-            {
-                new("Address", "Boundary St, West End", true),
-                new("Next collection date", "Thursday, 1 May 2026", true),
-                new("Bin types", "General / Recycling / Green", true)
-            },
-            Attachments: new List<string>(),
-            SubmitLabel: "",
-            QuickChips: new List<string> { "Set reminder", "Missed collection", "Bulk waste" }
-        ),
-        new ScenarioRule(
-            Keywords: new[] { "noise", "loud", "barking", "party", "music", "construction" },
-            Type: "complaint",
-            AgentMessage: "I can help you lodge a noise complaint with {council}.",
-            Tag: "Complaint ready",
-            Source: "{councilShort} · Noise complaint",
-            Fields: new List<ActionCardField>
-            {
-                new("Location", "Boundary St, West End", true),
-                new("Noise type", "Residential noise", true),
-                new("Time/frequency", "Ongoing", false),
-                new("Description", "", false)
-            },
-            Attachments: new List<string> { "note" },
-            SubmitLabel: "Submit to {council}",
-            QuickChips: new List<string> { "Track this complaint", "Noise regulations", "Other issues" }
-        ),
-        new ScenarioRule(
-            Keywords: new[] { "dog", "pet", "register", "animal", "puppy" },
-            Type: "registration",
-            AgentMessage: "I'll help you register your pet with {council}.",
-            Tag: "Registration form",
-            Source: "{councilShort} · Animal registration",
-            Fields: new List<ActionCardField>
-            {
-                new("Owner name", "", false),
-                new("Dog breed", "", false),
-                new("Microchip number", "", false),
-                new("Registration fee", "$40.00 / year", true)
-            },
-            Attachments: new List<string>(),
-            SubmitLabel: "Submit to {council}",
-            QuickChips: new List<string> { "Registration fees", "Off-leash parks", "Lost pets" }
-        )
-    };
 }

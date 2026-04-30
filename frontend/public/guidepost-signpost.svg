@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 720" width="488" height="720" role="img" aria-label="Guidepost signpost — River City Council">
+  <defs>
+    <style>
+      .sign-fill   { fill: #FAF6EC; }
+      .sign-active { fill: #DCFF54; }
+      .sign-text   { font-family: 'Geist', system-ui, sans-serif; font-weight: 600; fill: #1A1F1B; }
+      .sign-text.bold { font-weight: 700; }
+      .pole, .finial { fill: #DCFF54; }
+      .finial-inner { fill: #0a0a0a; }
+    </style>
+    <filter id="signShadow" x="-10%" y="-30%" width="120%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+    <filter id="activeGlow" x="-25%" y="-50%" width="150%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#DCFF54" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <!-- Pole (centered at x=244) -->
+  <rect class="pole" x="241" y="40" width="6" height="640" rx="3"/>
+
+  <!-- Finial: hollow lime ring at top of pole -->
+  <circle class="finial" cx="244" cy="40" r="11"/>
+  <circle class="finial-inner" cx="244" cy="40" r="5"/>
+
+  <!-- ============================================================
+       Banner: RIVER CITY COUNCIL (centered, both ends notched)
+       Horizontal pill above all directional signs
+  ============================================================ -->
+  <g filter="url(#signShadow)">
+    <path class="sign-active" d="
+      M 244,72
+      L 78,72
+      L 64,90
+      L 78,108
+      L 244,108
+      L 410,108
+      L 424,90
+      L 410,72
+      Z" />
+    <text class="sign-text bold" x="244" y="96" text-anchor="middle" font-size="18">GuidePost</text>
+  </g>
+
+  <!-- ============================================================
+       Directional signs.
+       Pattern: rectangle attached to pole, with arrow/notch at the
+       outer end. Inner end (against pole) is a straight cut.
+       Right-pointing signs sit to the right of the pole.
+       Left-pointing signs sit to the left.
+  ============================================================ -->
+
+  <!-- 1. Report an Issue — RIGHT, sign #1 -->
+  <g filter="url(#signShadow)">
+    <path class="sign-fill" d="
+      M 247,160
+      L 432,160
+      L 460,184
+      L 432,208
+      L 247,208
+      Z" />
+    <text class="sign-text bold" x="333" y="190" text-anchor="middle" font-size="17">River City</text>
+  </g>
+
+  <!-- 2. Elected Reps — LEFT, sign #2 -->
+  <g filter="url(#signShadow)">
+    <path class="sign-fill" d="
+      M 241,236
+      L 60,236
+      L 32,260
+      L 60,284
+      L 241,284
+      Z" />
+    <text class="sign-text bold" x="148" y="266" text-anchor="middle" font-size="17">Redlands</text>
+  </g>
+
+  <!-- 3. Development — RIGHT, sign #3 -->
+  <g filter="url(#signShadow)">
+    <path class="sign-fill" d="
+      M 247,312
+      L 432,312
+      L 460,336
+      L 432,360
+      L 247,360
+      Z" />
+    <text class="sign-text bold" x="333" y="342" text-anchor="middle" font-size="17">Armidale</text>
+  </g>
+
+  <!-- 4. News & Events — LEFT, sign #4, ACTIVE/HIGHLIGHTED -->
+  <g filter="url(#activeGlow)">
+    <path class="sign-active" d="
+      M 241,388
+      L 60,388
+      L 32,412
+      L 60,436
+      L 241,436
+      Z" />
+    <text class="sign-text bold" x="148" y="418" text-anchor="middle" font-size="17">Blackpool</text>
+  </g>
+
+  <!-- 5. Complaints — RIGHT, sign #5 -->
+  <g filter="url(#signShadow)">
+    <path class="sign-fill" d="
+      M 247,464
+      L 432,464
+      L 460,488
+      L 432,512
+      L 247,512
+      Z" />
+    <text class="sign-text bold" x="333" y="494" text-anchor="middle" font-size="17">Cambridge</text>
+  </g>
+
+  <!-- 6. Council Website — LEFT, sign #6 -->
+  <g filter="url(#signShadow)">
+    <path class="sign-fill" d="
+      M 241,540
+      L 60,540
+      L 32,564
+      L 60,588
+      L 241,588
+      Z" />
+    <text class="sign-text bold" x="148" y="570" text-anchor="middle" font-size="17">Whanganui</text>
+  </g>
+
+</svg>

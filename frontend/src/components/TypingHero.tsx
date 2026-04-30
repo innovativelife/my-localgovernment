@@ -4,7 +4,7 @@ const phrases = [
   "Is my bin day tomorrow?",
   "There's a pothole on Boundary St",
   "I need to register my dog",
-  "There's loud construction next door",
+  "There's loud construction noise",
 ];
 
 export default function TypingHero() {
