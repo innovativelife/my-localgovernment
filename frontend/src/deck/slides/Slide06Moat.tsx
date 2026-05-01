@@ -25,6 +25,12 @@ export default function Slide06Moat() {
             <div className="d">Citizens love it <strong>→</strong> Councils want to engage with it <strong>→</strong> Guide for Citizen pipeline grows.</div>
             <div className="d">Every <Logo className="inline-body" /> interaction is a <strong>Guide for Citizen promotion.</strong></div>
           </div>
+          <div className="pt">
+            <div className="n">04</div>
+            <div className="t">Targetted advertising</div>
+            <div className="d">Data collection is outside customer contracts</div>
+            <div className="d">We can collect and use data to supercharge advertising</div>
+          </div>
         </div>
       </div>
     </div>

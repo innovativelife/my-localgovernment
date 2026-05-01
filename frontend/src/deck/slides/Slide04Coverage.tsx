@@ -14,20 +14,20 @@ export default function Slide04Coverage() {
             <div className="chip">TechnologyOne councils</div>
             <h3 className="col-title">The <em>premium</em> experience</h3>
             <ul>
-              <li>Seamless handoff to <em>Guide for Citizen</em></li>
+              <li>A <em style={{ color: '#c8ff00' }}>font door</em> for <em style={{ color: '#c8ff00' }}>Guide for Citizen</em> with clean, seamless handoff.</li>
               <li>Branding and configuration of their <Logo className="inline-body" />  experience</li>
-              <li>Deep integrations</li>
               <li>Priority routing &amp; real-time status</li>
+              <li>Deep integrations with customer's core systems</li>
             </ul>
           </div>
           <div className="col">
-            <div className="chip">Non-T1 councils</div>
+            <div className="chip">All Non-T1 councils</div>
             <h3 className="col-title">Basic listing, with an <em>obvious upgrade path</em></h3>
             <ul>
               <li>Lightweight  workflows</li>
               <li>Generic branding</li>
-              <li>Deeplinks to council website</li>
               <li>Displacing point solutions (Snap-Send-Solve)</li>
+              <li>Deep links to council website</li>
             </ul>
           </div>
         </div>

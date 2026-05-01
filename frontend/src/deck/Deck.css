@@ -630,7 +630,7 @@
 
 .deck-root .s7 .headline em { font-style: normal; color: var(--lime); }
 
-.deck-root .s7 .points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4vmin; }
+.deck-root .s7 .points { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4vmin; }
 
 .deck-root .s7 .pt .n {
   font-family: 'Fraunces', serif;
